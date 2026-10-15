@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "ground_truth_file": "ground_truth.json",
+  "application_commit": null,
+  "model_id": null,
+  "evaluated_at_utc": null,
+  "results": [
+    {
+      "scenario_id": "A",
+      "workflow_run_url": null,
+      "run_attempt": null,
+      "workflow_commit": null,
+      "observed_conclusion": null,
+      "report_path": null,
+      "sanitized_evidence_path": null,
+      "gemini_calls_observed": null,
+      "criteria": {
+        "correct_run_and_outcome": null,
+        "diagnosis_supported": null,
+        "evidence_references_verified": null,
+        "action_appropriate": null,
+        "confidence_and_limits_appropriate": null
+      },
+      "verdict": "pending",
+      "notes": ""
+    },
+    {
+      "scenario_id": "B",
+      "workflow_run_url": null,
+      "run_attempt": null,
+      "workflow_commit": null,
+      "observed_conclusion": null,
+      "report_path": null,
+      "sanitized_evidence_path": null,
+      "gemini_calls_observed": null,
+      "criteria": {
+        "correct_run_and_outcome": null,
+        "diagnosis_supported": null,
+        "evidence_references_verified": null,
+        "action_appropriate": null,
+        "confidence_and_limits_appropriate": null
+      },
+      "verdict": "pending",
+      "notes": "Uncertainty about changing test versus implementation is acceptable when source/specification is absent."
+    },
+    {
+      "scenario_id": "C",
+      "workflow_run_url": null,
+      "run_attempt": null,
+      "workflow_commit": null,
+      "observed_conclusion": null,
+      "report_path": null,
+      "sanitized_evidence_path": null,
+      "gemini_calls_observed": null,
+      "criteria": {
+        "correct_run_and_outcome": null,
+        "diagnosis_supported": null,
+        "evidence_references_verified": null,
+        "action_appropriate": null,
+        "confidence_and_limits_appropriate": null
+      },
+      "verdict": "pending",
+      "notes": ""
+    },
+    {
+      "scenario_id": "D",
+      "workflow_run_url": null,
+      "run_attempt": null,
+      "workflow_commit": null,
+      "observed_conclusion": null,
+      "report_path": null,
+      "sanitized_evidence_path": null,
+      "gemini_calls_observed": null,
+      "criteria": {
+        "correct_run_and_outcome": null,
+        "no_failed_jobs_reported": null,
+        "no_failure_hypotheses": null,
+        "zero_gemini_calls_verified": null
+      },
+      "verdict": "pending",
+      "notes": "Do not infer zero model calls from report text alone."
+    }
+  ]
+}

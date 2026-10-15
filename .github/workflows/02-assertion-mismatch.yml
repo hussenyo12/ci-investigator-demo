@@ -1,0 +1,30 @@
+name: "02 - Assertion mismatch"
+
+"on":
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  assertion-mismatch:
+    name: Arithmetic assertion mismatch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.12
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Create isolated environment and install declared dependencies
+        run: |
+          python -I -m venv .venv
+          .venv/bin/python -I -m pip --isolated install --disable-pip-version-check --no-input -r requirements.txt
+      - name: Run arithmetic test
+        run: .venv/bin/python -I -m pytest -q scenarios/assertion_mismatch/test_addition.py

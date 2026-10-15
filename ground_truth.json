@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/hussenyo12/ci-investigator-demo",
+  "python_version": "3.12",
+  "scenarios": [
+    {
+      "id": "A",
+      "title": "Missing Python dependency",
+      "workflow": ".github/workflows/01-missing-dependency.yml",
+      "workflow_name": "01 - Missing Python dependency",
+      "job_id": "missing-dependency",
+      "expected_conclusion": "failure",
+      "command": [".venv/bin/python", "-I", "-m", "pytest", "-q", "scenarios/missing_dependency/test_yaml.py"],
+      "expected_exit_code": 2,
+      "log_signatures": ["ModuleNotFoundError: No module named 'yaml'"],
+      "root_cause": "PyYAML is missing from requirements.txt; the fresh virtual environment only installs declared dependencies.",
+      "corrective_action": "Add the appropriate PyYAML dependency to requirements.txt and rerun the workflow.",
+      "evidence_limits": "Logs establish that yaml cannot be imported. Attribute the missing dependency declaration using the collected requirements.txt and workflow when available.",
+      "evaluation": {
+        "required_findings": ["The Python module yaml is unavailable in the test environment.", "The distribution providing yaml is PyYAML."],
+        "expected_recommendation": "Declare and install PyYAML in the same environment used by pytest.",
+        "unsupported_claims": ["The failure is a network outage.", "An import named PyYAML should replace import yaml."]
+      }
+    },
+    {
+      "id": "B",
+      "title": "Incorrect test expectation",
+      "workflow": ".github/workflows/02-assertion-mismatch.yml",
+      "workflow_name": "02 - Assertion mismatch",
+      "job_id": "assertion-mismatch",
+      "expected_conclusion": "failure",
+      "command": [".venv/bin/python", "-I", "-m", "pytest", "-q", "scenarios/assertion_mismatch/test_addition.py"],
+      "expected_exit_code": 1,
+      "log_signatures": ["assert 4 == 5", "1 failed"],
+      "root_cause": "The test incorrectly expects 5 for add(2, 2). The implementation correctly returns 4.",
+      "corrective_action": "Change the test expectation from 5 to 4; retain the correct arithmetic implementation.",
+      "evidence_limits": "CI Investigator collects logs and selected configuration, not arbitrary source. A traceback can show the assertion and actual result without establishing intended behavior. A diagnosis may identify the mismatch while leaving whether the test or implementation should change unresolved.",
+      "evaluation": {
+        "required_findings": ["An assertion compares actual value 4 with expected value 5."],
+        "expected_recommendation": "Review the intended arithmetic behavior and test expectation; fix the expectation when source or specification confirms it.",
+        "accept_uncertainty_about_root_cause": true,
+        "require_high_confidence_root_cause": false,
+        "unsupported_claims": ["The arithmetic implementation is definitively broken based only on assert 4 == 5.", "Arbitrary source files were inspected when they were not in the collected evidence."]
+      }
+    },
+    {
+      "id": "C",
+      "title": "Missing environment variable",
+      "workflow": ".github/workflows/03-missing-env-var.yml",
+      "workflow_name": "03 - Missing environment variable",
+      "job_id": "missing-env-var",
+      "expected_conclusion": "failure",
+      "command": [".venv/bin/python", "-I", "scripts/require_endpoint.py"],
+      "unset_environment": ["DEMO_SERVICE_ENDPOINT"],
+      "local_validation_note": "unset_environment applies only to the local validator. The workflow omits the variable without unsetting it, so configuring the variable is sufficient to fix the failure.",
+      "expected_exit_code": 1,
+      "log_signatures": ["RuntimeError: DEMO_SERVICE_ENDPOINT environment variable is required"],
+      "root_cause": "The CI workflow omits the required DEMO_SERVICE_ENDPOINT environment variable.",
+      "corrective_action": "Define DEMO_SERVICE_ENDPOINT in the workflow or environment configuration; https://demo.invalid is sufficient for this non-networked demo.",
+      "evidence_limits": "The error establishes missing configuration. No network connection, credential, or external service is involved.",
+      "evaluation": {
+        "required_findings": ["DEMO_SERVICE_ENDPOINT is missing from the process environment."],
+        "expected_recommendation": "Define the non-sensitive demo setting in the workflow or environment configuration.",
+        "unsupported_claims": ["The service is unreachable.", "An API key or secret must be created."]
+      }
+    },
+    {
+      "id": "D",
+      "title": "Successful control",
+      "workflow": ".github/workflows/04-success-control.yml",
+      "workflow_name": "04 - Successful control",
+      "job_id": "success-control",
+      "expected_conclusion": "success",
+      "command": [".venv/bin/python", "-I", "-m", "pytest", "-q", "scenarios/success_control/test_arithmetic.py"],
+      "expected_exit_code": 0,
+      "log_signatures": ["4 passed"],
+      "root_cause": null,
+      "corrective_action": null,
+      "evidence_limits": "A successful run has no failed jobs to diagnose; confirm that dependency installation and all tests actually completed.",
+      "evaluation": {
+        "required_findings": ["There are no failed jobs to investigate."],
+        "expected_failed_jobs": 0,
+        "expected_gemini_calls": 0,
+        "expected_hypotheses": 0,
+        "unsupported_claims": ["A failure exists in this successful run.", "A corrective action is necessary."]
+      }
+    }
+  ]
+}
